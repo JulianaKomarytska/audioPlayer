@@ -4,8 +4,9 @@
 добавление аудио (в список)?
 форма загрузки аудио для воспроизведения
 
-искажение звука
+искажение звука ( createWaveShaper ,createBiquadFilter ,createConvolver, OscillatorNode, createPeriodicWave)
 ускорение/замедление звука
+захват звука с микрофона
 
 Типы визуализации:
 груг

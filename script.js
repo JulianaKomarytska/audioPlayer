@@ -1,4 +1,5 @@
-let arr, a_ctx, analyzer, src, red, green, blue, el_arr, wrapper, logo, domLoop, path;
+let arr, a_ctx, analyzer, src, red, green, blue, el_arr, wrapper, logo, domLoop, path, gainNode, CurY;
+let domInnerHeight;
 const audio = document.querySelector('audio');
 
 const CONST = {
@@ -11,7 +12,7 @@ const NS = {
     SVG: 'http://www.w3.org/2000/svg'
 }
 const CONFIG={
-    type: CONST.CIRCLE, // line
+    type: CONST.BEZIER, // line
     lineColor: 'black',
     step: 5,
     withGradient: false
@@ -27,6 +28,15 @@ window.onclick = function () {
     })() : (() => {
         audio.pause();
     })();
+}
+
+document.onmousemove = updatePage;
+
+function updatePage(e) {
+    if (audio.paused) return;
+    CurY = (window.Event) ? e.pageY : event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+    let max = parseInt(gainNode.gain.maxValue);
+    gainNode.gain.value = max  * (1 - CurY/domInnerHeight)
 }
 
 function renderByType(){
@@ -48,9 +58,13 @@ function prep(){
     a_ctx = new AudioContext();
     analyzer = a_ctx.createAnalyser();
     src = a_ctx.createMediaElementSource(audio);
+    gainNode = a_ctx.createGain();
+    domInnerHeight = innerHeight;
 
     src.connect(analyzer);
+    src.connect(gainNode);
     analyzer.connect(a_ctx.destination)
+    gainNode.connect(a_ctx.destination)
     renderByType()
 
     loop()
@@ -164,5 +178,6 @@ function loop() {
     analyzer.getByteFrequencyData(arr)
     domLoop()
 }
+
 
 
